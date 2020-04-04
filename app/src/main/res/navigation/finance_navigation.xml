@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/books_navigation"
+    app:startDestination="@id/calculate_fragment">
+
+    <fragment
+        android:id="@+id/calculate_fragment"
+        android:name="com.destr.financehelper.presentation.screen.calcualte.CalculateFragment"
+        android:label="Calculate Fragment"
+        tools:layout="@layout/calculated_fragment">
+        <action
+            android:id="@+id/action_start_course_fragment"
+            app:destination="@id/course_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/course_fragment"
+        android:name="com.destr.financehelper.presentation.screen.course.CourseFragment"
+        android:label="Course Fragment"
+        tools:layout="@layout/calculated_fragment">
+        <action
+            android:id="@+id/action_start_calculate_fragment"
+            app:destination="@id/calculate_fragment" />
+    </fragment>
+</navigation>

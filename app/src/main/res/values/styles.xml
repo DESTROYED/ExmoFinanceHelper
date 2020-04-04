@@ -1,0 +1,52 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#4527a0</item>
+        <item name="colorPrimaryDark">#4527a0</item>
+    </style>
+
+    <style name="CalculationValueInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="boxStrokeColor">@drawable/text_input_stroke</item>
+        <item name="hintTextAppearance">@style/TextInputLayoutTextStyle</item>
+        <item name="hintTextColor">@color/colorText</item>
+    </style>
+
+    <style name="CalculationValueEditTextLayout">
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:textColor">@color/colorText</item>
+    </style>
+
+    <style name="SpinnerStyle" parent="@style/Widget.AppCompat.Spinner">
+        <item name="android:background">@drawable/spinner_outline</item>
+    </style>
+
+    <style name="TextInputLayoutTextStyle" parent="@android:style/TextAppearance">
+        <item name="android:textSize">12sp</item>
+        <item name="hintTextColor">@color/colorText</item>
+        <item name="android:textColor">@color/colorText</item>
+    </style>
+
+    <style name="TextOutputStyle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:textAppearance">@style/OutputTextViewStyle</item>
+    </style>
+
+    <style name="TextOutputLabelStyle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:textAppearance">@style/OutputTextViewStyle</item>
+    </style>
+
+    <style name="OutputTextViewStyle" parent="@android:style/TextAppearance">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorText</item>
+    </style>
+</resources>

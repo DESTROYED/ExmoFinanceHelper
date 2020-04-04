@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">FinanceHelper</string>
+    <string name="entrance_value_hint">Set entrance value</string>
+    <string name="current_coin_cost_hint">Enter current coin cost</string>
+    <string name="planned_sell_coin_cost_hint">Enter planned sell coin cost</string>
+    <string name="converting_course_hint">Enter converting course</string>
+    <string name="calculation_page_title">Calculation page</string>
+    <string name="null_sell_price_label_text">Null sell price:</string>
+    <string name="profit_label_text">Profit:</string>
+    <string name="converted_benefit_label_text">Converted benefit:</string>
+    <string name="course_page_title">Course page</string>
+    <string name="calculate_page_title">Calculate page</string>
+    <string name="favorite_button_description">Favorite button</string>
+</resources>
