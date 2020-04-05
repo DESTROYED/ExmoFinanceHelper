@@ -17,6 +17,7 @@ class CoursePresenter : MvpPresenter<CourseView>() {
     private val presenterIOScope = CoroutineScope(Dispatchers.IO + presenterJob)
 
     private var currencies: List<String> = emptyList()
+    private var secondCurrencies: List<String> = emptyList()
     private var pairsMap: Map<String, PairDetail> = emptyMap()
     private var filteredPairs: Map<String, PairDetail> = emptyMap()
 
@@ -25,47 +26,66 @@ class CoursePresenter : MvpPresenter<CourseView>() {
         loadPairs()
     }
 
-    private fun loadCurrencies() = presenterIOScope.launch {
-        currencies = Dao.SERVER_DAO.getCurrenciesAsync()
-        presenterUIScope.launch {
-            val firstCurrencies = mutableListOf<String>()
-            firstCurrencies.add("Select currency")
-            firstCurrencies.addAll(currencies)
-            viewState.setFirstCurrency(currencies)
-        }
-    }
-
     private fun loadPairs() = presenterIOScope.launch {
         pairsMap = Dao.SERVER_DAO.getPairWithDetails()
         presenterUIScope.launch { viewState.setPairs(pairsMap) }
     }
 
-    fun filterBySecondCurrency(currency: String) =
+    private fun filterBySecondCurrency(currency: String) =
         viewState.setPairs(filteredPairs.filter { it.key.contains(currency) })
 
-    private fun getSecondCurrencyFromPairs(
-        filteredPairs: Map<String, PairDetail>,
-        currency: String
-    ): List<String> {
-        val secondCurrencyList = mutableListOf<String>()
-        filteredPairs.forEach {
-            if (it.key.contains(currency + "_")) {
-                secondCurrencyList.add(it.key.substring(currency.length + 1))
-            } else {
-                secondCurrencyList.add(it.key.substring(0, it.key.length - currency.length - 1))
+    private fun getSecondCurrencyFromPairs(currency: String): List<String> =
+        filteredPairs.filter { isPairContainsCurrency(it, currency) }.map { pairDetail ->
+            when (currency) {
+                getFirstCurrencyFromPair(pairDetail) -> getSecondCurrencyFromPair(pairDetail)
+                getSecondCurrencyFromPair(pairDetail) -> getFirstCurrencyFromPair(pairDetail)
+                else -> ""
             }
         }
-        return secondCurrencyList
-    }
 
-    fun onFirstCurrencyViewClicked(position: Int) {
+    fun onFirstCurrencyViewClicked(position: Int) =
         if (position != 0) loadSecondCurrency(currencies[position - 1])
         else loadSecondCurrency("")
+
+    fun onSecondCurrencyViewClicked(position: Int) =
+        if (position != 0) filterBySecondCurrency(secondCurrencies[position - 1])
+        else filterBySecondCurrency("")
+
+    private fun loadCurrencies() = presenterIOScope.launch {
+        currencies = Dao.SERVER_DAO.getCurrenciesAsync()
+        presenterUIScope.launch {
+            viewState.setFirstCurrency(presetCurrencies(currencies))
+        }
     }
 
     private fun loadSecondCurrency(currency: String) {
-        filteredPairs = pairsMap.filter { pairDetail -> pairDetail.key.contains(currency) }
+        filteredPairs = if (currency.isNotEmpty()) {
+            pairsMap.filter { pairDetail -> isPairContainsCurrency(pairDetail, currency) }
+        } else {
+            pairsMap
+        }
+        secondCurrencies = getSecondCurrencyFromPairs(currency)
         viewState.setPairs(filteredPairs)
-        viewState.setSecondCurrency(getSecondCurrencyFromPairs(filteredPairs, currency))
+        viewState.setSecondCurrency(presetCurrencies(secondCurrencies))
+    }
+
+    private fun isPairContainsCurrency(
+        pairDetail: Map.Entry<String, PairDetail>,
+        currency: String
+    ) =
+        pairDetail.key.split("_")[0] == currency
+                || pairDetail.key.split("_")[1] == currency
+
+    private fun getFirstCurrencyFromPair(pairDetail: Map.Entry<String, PairDetail>) =
+        pairDetail.key.split("_")[0]
+
+    private fun getSecondCurrencyFromPair(pairDetail: Map.Entry<String, PairDetail>) =
+        pairDetail.key.split("_")[1]
+
+    private fun presetCurrencies(localCurrencies: List<String>): List<String> {
+        val firstCurrencies = mutableListOf<String>()
+        firstCurrencies.add("Select currency")
+        firstCurrencies.addAll(localCurrencies)
+        return firstCurrencies
     }
 }

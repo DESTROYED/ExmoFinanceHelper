@@ -20,7 +20,7 @@ class CourseFragment : MvpNavFragment(), CourseView {
     @InjectPresenter
     lateinit var coursePresenter: CoursePresenter
 
-    private val courseAdapter = CourseAdapter(TaskDiffCallback())
+    private val courseAdapter by lazy { CourseAdapter(TaskDiffCallback()) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,10 +60,7 @@ class CourseFragment : MvpNavFragment(), CourseView {
     }
 
     override fun setSecondCurrency(currencies: List<String>) {
-        val firstCurrencies = mutableListOf<String>()
-        firstCurrencies.add("Select currency")
-        firstCurrencies.addAll(currencies)
-        val adapter = ArrayAdapter<String>(requireContext(), R.layout.spinner_item, firstCurrencies)
+        val adapter = ArrayAdapter(requireContext(), R.layout.spinner_item, currencies)
         secondCurrency.adapter = adapter
         secondCurrency.setSelection(0)
         secondCurrency.onItemSelectedListener = object : SimpleOnItemSelectedListener() {
@@ -73,13 +70,10 @@ class CourseFragment : MvpNavFragment(), CourseView {
                 position: Int,
                 id: Long
             ) {
-                if (position != 0) coursePresenter.filterBySecondCurrency(currencies[position - 1])
-                else coursePresenter.filterBySecondCurrency("")
+                coursePresenter.onSecondCurrencyViewClicked(position)
             }
         }
     }
 
-    override fun setPairs(pairs: Map<String, PairDetail>) {
-        courseAdapter.submitList(pairs.toList())
-    }
+    override fun setPairs(pairs: Map<String, PairDetail>) = courseAdapter.submitList(pairs.toList())
 }

@@ -3,20 +3,21 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#4527a0</item>
-        <item name="colorPrimaryDark">#4527a0</item>
+        <item name="colorPrimaryDark">#0C0C15</item>
     </style>
 
-    <style name="CalculationValueInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="CalculationValueInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="android:layout_marginStart">16dp</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginEnd">16dp</item>
-        <item name="boxStrokeColor">@drawable/text_input_stroke</item>
+        <item name="boxStrokeColor">@android:color/transparent</item>
         <item name="hintTextAppearance">@style/TextInputLayoutTextStyle</item>
         <item name="hintTextColor">@color/colorText</item>
     </style>
 
     <style name="CalculationValueEditTextLayout">
         <item name="android:inputType">numberDecimal</item>
+        <item name="android:background">@drawable/edit_text_outline</item>
         <item name="android:textColor">@color/colorText</item>
     </style>
 

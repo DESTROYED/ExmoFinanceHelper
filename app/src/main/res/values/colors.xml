@@ -2,11 +2,11 @@
 <resources>
 
     <color name="colorPrimary">#4527a0</color>
-    <color name="colorText">#B19FCA</color>
-    <color name="colorSelected">#C6BFCF</color>
+    <color name="colorText">#ffffff</color>
+    <color name="colorSelected">#ffffff</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#4527a0</color>
-    <color name="colorSpinnerBackground">#43009F</color>
+    <color name="colorSpinnerBackground">#1D1D2B</color>
     <color name="colorBorderDark">#3C008C</color>
     <color name="colorBuy">#7CB342</color>
     <color name="colorSell">#ff5252</color>
