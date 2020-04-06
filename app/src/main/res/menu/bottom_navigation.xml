@@ -3,11 +3,11 @@
     <item
         android:id="@+id/course_fragment"
         android:enabled="true"
-        android:icon="@drawable/btc"
+        android:icon="@drawable/ic_exchange"
         android:title="@string/course_page_title" />
     <item
         android:id="@+id/calculate_fragment"
         android:enabled="true"
-        android:icon="@drawable/etc"
+        android:icon="@drawable/ic_calculation"
         android:title="@string/calculate_page_title"/>
 </menu>
