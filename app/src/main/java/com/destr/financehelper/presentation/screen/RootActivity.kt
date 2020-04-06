@@ -12,8 +12,6 @@ class RootActivity : MvpAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        bottom_navigation.setupWithNavController(findNavController(this,
-            R.id.navigation_fragment
-        ))
+        bottom_navigation.setupWithNavController(findNavController(this, R.id.navigation_fragment))
     }
 }

@@ -14,14 +14,7 @@ import java.util.concurrent.TimeUnit
 
 object ServerDaoImpl : ServerDao {
 
-    private val okHttpClient by lazy {
-        OkHttpClient.Builder()
-                // Todo change if Build config
-            .addInterceptor(setupHttpLoggingInterceptor())
-            .retryOnConnectionFailure(true)
-            .connectionPool(ConnectionPool(0, 1, TimeUnit.NANOSECONDS))
-            .build()
-    }
+    private val api by lazy { retrofit.create(Api::class.java) }
 
     private val retrofit by lazy {
         Retrofit.Builder()
@@ -29,25 +22,30 @@ object ServerDaoImpl : ServerDao {
             .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(
                 GsonConverterFactory.create(
-                    GsonBuilder()
-                        .registerTypeAdapter(
-                            object : TypeToken<Map<String, PairDetail>>() {}.type,
-                            JsonMapDeserializer()
-                        ).create()
+                    GsonBuilder().registerTypeAdapter(
+                        object : TypeToken<Map<String, PairDetail>>() {}.type,
+                        JsonMapDeserializer()
+                    ).create()
                 )
             )
             .build()
     }
 
-    private fun setupHttpLoggingInterceptor(): HttpLoggingInterceptor{
+    private val okHttpClient by lazy {
+        OkHttpClient.Builder()
+            .apply { if (BuildConfig.DEBUG) addInterceptor(setupHttpLoggingInterceptor()) }
+            .retryOnConnectionFailure(true)
+            .connectionPool(ConnectionPool(0, 1, TimeUnit.NANOSECONDS))
+            .build()
+    }
+
+    private fun setupHttpLoggingInterceptor(): HttpLoggingInterceptor {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.apply {
             httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         }
         return httpLoggingInterceptor
     }
-
-    private val api = retrofit.create(Api::class.java)
 
     override suspend fun getCurrenciesAsync(): List<String> {
         return api.getCurrenciesAsync()
