@@ -1,14 +1,12 @@
 package com.destr.financehelper.domain
 
-import com.destr.financehelper.data.datasource.cloud.response.PairDetail
+interface CurrencyPairRepository {
 
-public interface CurrencyPairRepository {
+    suspend fun getCurrenciesAsync(): List<String>
 
-    suspend fun getCurrenciesAsync(): List<String>?
+    suspend fun getPairWithDetails(): List<CurrencyPair>
 
-    suspend fun getPairWithDetails(): Map<String, PairDetail>?
+    suspend fun getFavoritePairDetails(): List<CurrencyPair>
 
-    suspend fun getFavoritePairDetails(): Map<String, PairDetail>?
-
-    suspend fun addFavoritePair(currencyPair: String, isFavorite: Boolean): Unit?
+    suspend fun setFavoriteState(currencyPair: String, isFavorite: Boolean): Unit?
 }

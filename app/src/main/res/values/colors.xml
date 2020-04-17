@@ -10,4 +10,5 @@
     <color name="colorBorderDark">#3C008C</color>
     <color name="colorBuy">#7CB342</color>
     <color name="colorSell">#ff5252</color>
+    <color name="colorBackgroundFavorite">#654C21</color>
 </resources>

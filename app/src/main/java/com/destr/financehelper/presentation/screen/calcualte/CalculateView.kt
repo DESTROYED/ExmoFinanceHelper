@@ -2,7 +2,7 @@ package com.destr.financehelper.presentation.screen.calcualte
 
 import moxy.MvpView
 
-interface CalculateView: MvpView {
+interface CalculateView : MvpView {
 
     fun setCalculatedNullBestPrice(calculatedNullBestPrice: Double)
 

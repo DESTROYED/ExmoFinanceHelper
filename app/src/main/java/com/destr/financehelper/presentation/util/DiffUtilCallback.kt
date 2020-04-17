@@ -1,16 +1,16 @@
 package com.destr.financehelper.presentation.util
 
 import androidx.recyclerview.widget.DiffUtil
-import com.destr.financehelper.data.datasource.cloud.response.PairDetail
+import com.destr.financehelper.domain.CurrencyPair
 
-class TaskDiffCallback : DiffUtil.ItemCallback<Pair<String, PairDetail>>() {
+class TaskDiffCallback : DiffUtil.ItemCallback<CurrencyPair>() {
 
     override fun areItemsTheSame(
-        oldItem: Pair<String, PairDetail>,
-        newItem: Pair<String, PairDetail>
-    ) = oldItem.first == newItem.first
+        oldItem: CurrencyPair,
+        newItem: CurrencyPair
+    ) = oldItem == newItem
 
     override fun areContentsTheSame(
-        oldItem: Pair<String, PairDetail>, newItem: Pair<String, PairDetail>
+        oldItem: CurrencyPair, newItem: CurrencyPair
     ) = oldItem == newItem
 }

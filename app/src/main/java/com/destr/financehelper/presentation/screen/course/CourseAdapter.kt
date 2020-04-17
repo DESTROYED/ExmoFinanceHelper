@@ -1,23 +1,18 @@
 package com.destr.financehelper.presentation.screen.course
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.destr.financehelper.R
-import com.destr.financehelper.data.datasource.cloud.response.PairDetail
+import com.destr.financehelper.domain.CurrencyPair
 import com.destr.financehelper.domain.getImageByCoinName
-import com.google.android.material.textview.MaterialTextView
-import kotlinx.android.synthetic.main.course_showcase_item.view.*
 import java.util.*
 
 class CourseAdapter(
-    diffCallback: DiffUtil.ItemCallback<Pair<String, PairDetail>>,
-    private val onPairLongClicked: (Int, String) -> Unit
-    ) : ListAdapter<Pair<String, PairDetail>, CourseViewHolder>(diffCallback) {
+    diffCallback: DiffUtil.ItemCallback<CurrencyPair>,
+    private val onPairLongClicked: (CurrencyPair) -> Unit
+) : ListAdapter<CurrencyPair, CourseViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         CourseViewHolder(
@@ -35,29 +30,30 @@ class CourseAdapter(
             firstCurrencyIcon.setImageDrawable(
                 getImageByCoinName(
                     firstCurrencyIcon.context,
-                    currency.first.split("_")[0].toLowerCase(Locale.ROOT)
+                    currency.firstCurrency.toLowerCase(Locale.ROOT)
                 )
             )
             secondCurrencyIcon.rotation = -15f
             secondCurrencyIcon.setImageDrawable(
                 getImageByCoinName(
                     firstCurrencyIcon.context,
-                    currency.first.split("_")[1].toLowerCase(Locale.ROOT)
+                    currency.secondCurrency.toLowerCase(Locale.ROOT)
                 )
             )
-            currencyPair.text = currency.first.replace("_", "/")
-            avgForDay.text = currency.second.avg
+            currencyPair.text = currency?.pairName
+            avgForDay.text = currency.avg
+            if (currency.isFavorite) {
+                rootView.setBackgroundColor(rootView.context.getColor(R.color.colorBackgroundFavorite))
+            } else {
+                rootView.setBackgroundColor(rootView.context.getColor(R.color.colorSpinnerBackground))
+            }
+
             itemView.setOnLongClickListener {
-                onPairLongClicked.invoke(adapterPosition, currency.first)
+                onPairLongClicked.invoke(currency)
+                currency.isFavorite = !currency.isFavorite
+                notifyItemChanged(adapterPosition)
                 return@setOnLongClickListener true
             }
         }
     }
-}
-
-class CourseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val currencyPair: MaterialTextView = itemView.currencyPair
-    val avgForDay: MaterialTextView = itemView.avgForDay
-    val firstCurrencyIcon: ImageView = itemView.firstCurrencyIcon
-    val secondCurrencyIcon: ImageView = itemView.secondCurrencyIcon
 }

@@ -1,7 +1,7 @@
 package com.destr.financehelper.presentation.screen.course
 
-import com.destr.financehelper.data.datasource.CurrencyPairRepositoryImpl
-import com.destr.financehelper.data.datasource.cloud.response.PairDetail
+import com.destr.financehelper.domain.CurrencyPair
+import com.destr.financehelper.presentation.ExmoFinanceHelperApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -18,8 +18,9 @@ class CoursePresenter : MvpPresenter<CourseView>() {
 
     private var currencies: List<String> = emptyList()
     private var secondCurrencies: List<String> = emptyList()
-    private var pairsMap: Map<String, PairDetail> = emptyMap()
-    private var filteredPairs: Map<String, PairDetail> = emptyMap()
+    private var pairsMap: List<CurrencyPair> = emptyList()
+    private var filteredPairs: List<CurrencyPair> = emptyList()
+    private var coursePairRepository = ExmoFinanceHelperApplication().currencyPairRepository
 
     fun onStart() {
         loadCurrencies()
@@ -27,12 +28,12 @@ class CoursePresenter : MvpPresenter<CourseView>() {
     }
 
     private fun loadPairs() = presenterIOScope.launch {
-        pairsMap = CurrencyPairRepositoryImpl.getPairWithDetails().orEmpty()
+        pairsMap = ExmoFinanceHelperApplication().currencyPairRepository.getPairWithDetails()
         presenterUIScope.launch { viewState.setPairs(pairsMap) }
     }
 
     private fun filterBySecondCurrency(currency: String) =
-        viewState.setPairs(filteredPairs.filter { it.key.contains(currency) })
+        viewState.setPairs(filteredPairs.filter { it.pairName.contains(currency) })
 
     private fun getSecondCurrencyFromPairs(currency: String): List<String> =
         filteredPairs.filter { isPairContainsCurrency(it, currency) }.map { pairDetail ->
@@ -51,15 +52,14 @@ class CoursePresenter : MvpPresenter<CourseView>() {
         if (position != 0) filterBySecondCurrency(secondCurrencies[position - 1])
         else filterBySecondCurrency("")
 
-    fun onCourseItemLongClick(position: Int, currencyValue: String) {
+    fun onCourseItemLongClick(currencyPair: CurrencyPair) {
         presenterIOScope.launch {
-            CurrencyPairRepositoryImpl.currencyPairFactory.createLocalPairStorage()
-                .setFavoriteState(currencyValue, true)
+            coursePairRepository.setFavoriteState(currencyPair.pairName, !currencyPair.isFavorite)
         }
     }
 
     private fun loadCurrencies() = presenterIOScope.launch {
-        currencies = CurrencyPairRepositoryImpl.getCurrenciesAsync().orEmpty()
+        currencies = coursePairRepository.getCurrenciesAsync()
         presenterUIScope.launch { viewState.setFirstCurrency(presetCurrencies(currencies)) }
     }
 
@@ -74,18 +74,14 @@ class CoursePresenter : MvpPresenter<CourseView>() {
         viewState.setSecondCurrency(presetCurrencies(secondCurrencies))
     }
 
-    private fun isPairContainsCurrency(
-        pairDetail: Map.Entry<String, PairDetail>,
-        currency: String
-    ) =
-        pairDetail.key.split("_")[0] == currency
-                || pairDetail.key.split("_")[1] == currency
+    private fun isPairContainsCurrency(pairDetail: CurrencyPair, currency: String) =
+        pairDetail.firstCurrency == currency || pairDetail.secondCurrency == currency
 
-    private fun getFirstCurrencyFromPair(pairDetail: Map.Entry<String, PairDetail>) =
-        pairDetail.key.split("_")[0]
+    private fun getFirstCurrencyFromPair(pairDetail: CurrencyPair) =
+        pairDetail.firstCurrency
 
-    private fun getSecondCurrencyFromPair(pairDetail: Map.Entry<String, PairDetail>) =
-        pairDetail.key.split("_")[1]
+    private fun getSecondCurrencyFromPair(pairDetail: CurrencyPair) =
+        pairDetail.secondCurrency
 
     private fun presetCurrencies(localCurrencies: List<String>): List<String> {
         val firstCurrencies = mutableListOf<String>()

@@ -17,6 +17,6 @@ class LocalCurrencyPairStore(context: Context) : CurrencyPairStore {
         dbInstance?.favoriteDao()?.getAllCurrencyFavoritePairs().orEmpty()
 
     override suspend fun setFavoriteState(currencyPair: String, isFavorite: Boolean) {
-        dbInstance?.favoriteDao()?.addCurrencyPair(Favorite(currencyPair, isFavorite))
+        dbInstance?.favoriteDao()?.insertOrUpdatePair(Favorite(currencyPair, isFavorite))
     }
 }

@@ -9,5 +9,5 @@
         android:id="@+id/calculate_fragment"
         android:enabled="true"
         android:icon="@drawable/ic_calculation"
-        android:title="@string/calculate_page_title"/>
+        android:title="@string/calculate_page_title" />
 </menu>

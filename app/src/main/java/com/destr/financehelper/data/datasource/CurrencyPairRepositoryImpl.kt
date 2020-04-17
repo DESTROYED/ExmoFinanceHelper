@@ -1,6 +1,8 @@
 package com.destr.financehelper.data.datasource
 
 import com.destr.financehelper.data.datasource.cloud.response.PairDetail
+import com.destr.financehelper.data.datasource.cloud.response.getCurrencyPairList
+import com.destr.financehelper.domain.CurrencyPair
 import com.destr.financehelper.domain.CurrencyPairRepository
 
 object CurrencyPairRepositoryImpl : CurrencyPairRepository {
@@ -13,21 +15,22 @@ object CurrencyPairRepositoryImpl : CurrencyPairRepository {
     override suspend fun getCurrenciesAsync() =
         currencyPairFactory.createCloudPairStorage().getCurrenciesAsync()
 
-    override suspend fun getPairWithDetails(): Map<String, PairDetail>? {
+    override suspend fun getPairWithDetails(): List<CurrencyPair> {
+
         if (currencyPairWithDetail == null || System.currentTimeMillis() - updateTimeStamp > 3000) {
             currencyPairWithDetail =
                 currencyPairFactory.createCloudPairStorage().getPairWithDetails()
-            updateTimeStamp = System.currentTimeMillis()
 
+            updateTimeStamp = System.currentTimeMillis()
         }
-        return currencyPairWithDetail
+        val favorites = currencyPairFactory.createLocalPairStorage().getFavoritePairDetails()
+        return currencyPairWithDetail.orEmpty().getCurrencyPairList(favorites)
     }
 
-    override suspend fun getFavoritePairDetails() =
-        getPairWithDetails().orEmpty().filterKeys {
-            currencyPairFactory.createLocalPairStorage().getFavoritePairDetails().contains(it)
-        }
+    override suspend fun getFavoritePairDetails() = getPairWithDetails().filter {
+        currencyPairFactory.createLocalPairStorage().getFavoritePairDetails().find { favorite -> favorite.currencyPair == it.pairName } != null
+    }
 
-    override suspend fun addFavoritePair(currencyPair: String, isFavorite: Boolean) =
+    override suspend fun setFavoriteState(currencyPair: String, isFavorite: Boolean) =
         currencyPairFactory.createLocalPairStorage().setFavoriteState(currencyPair, isFavorite)
 }

@@ -6,9 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import com.destr.financehelper.R
-import com.destr.financehelper.data.datasource.cloud.response.PairDetail
+import com.destr.financehelper.domain.CurrencyPair
 import com.destr.financehelper.presentation.common.MvpNavFragment
 import com.destr.financehelper.presentation.util.SimpleOnItemSelectedListener
 import com.destr.financehelper.presentation.util.TaskDiffCallback
@@ -21,9 +20,8 @@ class CourseFragment : MvpNavFragment(), CourseView {
     @InjectPresenter
     lateinit var coursePresenter: CoursePresenter
 
-    private val onPairLongClick = { position: Int, pairValue: String ->
-        Toast.makeText(context, "pair name: " + pairValue, Toast.LENGTH_SHORT).show()
-        coursePresenter.onCourseItemLongClick(position, pairValue)
+    private val onPairLongClick = { currencyPair: CurrencyPair ->
+        coursePresenter.onCourseItemLongClick(currencyPair)
     }
 
     private val courseAdapter by lazy { CourseAdapter(TaskDiffCallback(), onPairLongClick) }
@@ -71,5 +69,5 @@ class CourseFragment : MvpNavFragment(), CourseView {
         }
     }
 
-    override fun setPairs(pairs: Map<String, PairDetail>) = courseAdapter.submitList(pairs.toList())
+    override fun setPairs(pairs: List<CurrencyPair>?) = courseAdapter.submitList(pairs)
 }
