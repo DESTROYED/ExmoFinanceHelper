@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.destr.financehelper.R
 import com.destr.financehelper.data.datasource.cloud.response.PairDetail
 import com.destr.financehelper.presentation.common.MvpNavFragment
@@ -20,16 +21,19 @@ class CourseFragment : MvpNavFragment(), CourseView {
     @InjectPresenter
     lateinit var coursePresenter: CoursePresenter
 
-    private val courseAdapter by lazy { CourseAdapter(TaskDiffCallback()) }
+    private val onPairLongClick = { position: Int, pairValue: String ->
+        Toast.makeText(context, "pair name: " + pairValue, Toast.LENGTH_SHORT).show()
+        coursePresenter.onCourseItemLongClick(position, pairValue)
+    }
+
+    private val courseAdapter by lazy { CourseAdapter(TaskDiffCallback(), onPairLongClick) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.course_fragment, container, false).apply {
-            setupCourseViews(this)
-        }
+    ): View? = inflater.inflate(R.layout.course_fragment, container, false).apply {
+        setupCourseViews(this)
     }
 
     override fun onStart() {
@@ -37,11 +41,7 @@ class CourseFragment : MvpNavFragment(), CourseView {
         coursePresenter.onStart()
     }
 
-    private fun setupCourseViews(view: View) {
-        with(view) {
-            course_list.adapter = courseAdapter
-        }
-    }
+    private fun setupCourseViews(view: View) = with(view) { course_list.adapter = courseAdapter }
 
     override fun setFirstCurrency(currencies: List<String>) {
         val adapter = ArrayAdapter(requireContext(), R.layout.spinner_item, currencies)
@@ -53,9 +53,7 @@ class CourseFragment : MvpNavFragment(), CourseView {
                 view: View?,
                 position: Int,
                 id: Long
-            ) {
-                coursePresenter.onFirstCurrencyViewClicked(position)
-            }
+            ) = coursePresenter.onFirstCurrencyViewClicked(position)
         }
     }
 
@@ -69,9 +67,7 @@ class CourseFragment : MvpNavFragment(), CourseView {
                 view: View?,
                 position: Int,
                 id: Long
-            ) {
-                coursePresenter.onSecondCurrencyViewClicked(position)
-            }
+            ) = coursePresenter.onSecondCurrencyViewClicked(position)
         }
     }
 

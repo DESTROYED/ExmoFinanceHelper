@@ -1,6 +1,6 @@
 package com.destr.financehelper.presentation.screen.course
 
-import com.destr.financehelper.data.datasource.cloud.Dao
+import com.destr.financehelper.data.datasource.CurrencyPairRepositoryImpl
 import com.destr.financehelper.data.datasource.cloud.response.PairDetail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +27,7 @@ class CoursePresenter : MvpPresenter<CourseView>() {
     }
 
     private fun loadPairs() = presenterIOScope.launch {
-        pairsMap = Dao.SERVER_DAO.getPairWithDetails()
+        pairsMap = CurrencyPairRepositoryImpl.getPairWithDetails().orEmpty()
         presenterUIScope.launch { viewState.setPairs(pairsMap) }
     }
 
@@ -51,11 +51,16 @@ class CoursePresenter : MvpPresenter<CourseView>() {
         if (position != 0) filterBySecondCurrency(secondCurrencies[position - 1])
         else filterBySecondCurrency("")
 
-    private fun loadCurrencies() = presenterIOScope.launch {
-        currencies = Dao.SERVER_DAO.getCurrenciesAsync()
-        presenterUIScope.launch {
-            viewState.setFirstCurrency(presetCurrencies(currencies))
+    fun onCourseItemLongClick(position: Int, currencyValue: String) {
+        presenterIOScope.launch {
+            CurrencyPairRepositoryImpl.currencyPairFactory.createLocalPairStorage()
+                .setFavoriteState(currencyValue, true)
         }
+    }
+
+    private fun loadCurrencies() = presenterIOScope.launch {
+        currencies = CurrencyPairRepositoryImpl.getCurrenciesAsync().orEmpty()
+        presenterUIScope.launch { viewState.setFirstCurrency(presetCurrencies(currencies)) }
     }
 
     private fun loadSecondCurrency(currency: String) {

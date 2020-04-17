@@ -8,9 +8,7 @@ class CalculateEntity {
     }
 
     fun getCostDiff(entrancePrice: Double, cost: Double, sellCost: Double) =
-        entrancePrice * (sellCost - getNotLossCost(
-            cost
-        ))
+        entrancePrice * (sellCost - getNotLossCost(cost))
 
     fun getNotLossCost(cost: Double) = cost * sqrt(getPercentage())
 

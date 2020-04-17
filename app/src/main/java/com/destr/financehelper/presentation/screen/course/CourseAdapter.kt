@@ -14,8 +14,10 @@ import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.synthetic.main.course_showcase_item.view.*
 import java.util.*
 
-class CourseAdapter(diffCallback: DiffUtil.ItemCallback<Pair<String, PairDetail>>) :
-    ListAdapter<Pair<String, PairDetail>, CourseViewHolder>(diffCallback) {
+class CourseAdapter(
+    diffCallback: DiffUtil.ItemCallback<Pair<String, PairDetail>>,
+    private val onPairLongClicked: (Int, String) -> Unit
+    ) : ListAdapter<Pair<String, PairDetail>, CourseViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         CourseViewHolder(
@@ -45,6 +47,10 @@ class CourseAdapter(diffCallback: DiffUtil.ItemCallback<Pair<String, PairDetail>
             )
             currencyPair.text = currency.first.replace("_", "/")
             avgForDay.text = currency.second.avg
+            itemView.setOnLongClickListener {
+                onPairLongClicked.invoke(adapterPosition, currency.first)
+                return@setOnLongClickListener true
+            }
         }
     }
 }

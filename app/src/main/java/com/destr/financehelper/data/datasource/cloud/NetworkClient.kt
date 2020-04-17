@@ -12,7 +12,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-object ServerDaoImpl : ServerDao {
+object NetworkClient {
 
     private val api by lazy { retrofit.create(Api::class.java) }
 
@@ -41,17 +41,11 @@ object ServerDaoImpl : ServerDao {
 
     private fun setupHttpLoggingInterceptor(): HttpLoggingInterceptor {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
-        httpLoggingInterceptor.apply {
-            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        }
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return httpLoggingInterceptor
     }
 
-    override suspend fun getCurrenciesAsync(): List<String> {
-        return api.getCurrenciesAsync()
-    }
+    suspend fun getCurrenciesAsync() = api.getCurrenciesAsync()
 
-    override suspend fun getPairWithDetails(): Map<String, PairDetail> {
-        return api.getPairWithDetails()
-    }
+    suspend fun getPairWithDetails() = api.getPairWithDetails()
 }
