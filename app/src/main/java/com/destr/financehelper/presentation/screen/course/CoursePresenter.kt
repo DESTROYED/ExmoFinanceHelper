@@ -27,6 +27,11 @@ class CoursePresenter : MvpPresenter<CourseView>() {
         loadPairs()
     }
 
+    fun refreshCourses(){
+        presenterUIScope.launch { viewState.setPairs(null) }
+        onStart()
+    }
+
     private fun loadPairs() = presenterIOScope.launch {
         pairsMap = ExmoFinanceHelperApplication().currencyPairRepository.getPairWithDetails()
         presenterUIScope.launch { viewState.setPairs(pairsMap) }

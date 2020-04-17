@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.widget.NestedScrollView
 import com.destr.financehelper.R
 import com.destr.financehelper.domain.CurrencyPair
 import com.destr.financehelper.presentation.common.MvpNavFragment
@@ -39,7 +40,12 @@ class CourseFragment : MvpNavFragment(), CourseView {
         coursePresenter.onStart()
     }
 
-    private fun setupCourseViews(view: View) = with(view) { course_list.adapter = courseAdapter }
+    private fun setupCourseViews(view: View) = with(view) {
+        course_list.adapter = courseAdapter
+        swipeRefresh.setOnRefreshListener {
+            coursePresenter.refreshCourses()
+        }
+    }
 
     override fun setFirstCurrency(currencies: List<String>) {
         val adapter = ArrayAdapter(requireContext(), R.layout.spinner_item, currencies)
@@ -69,5 +75,8 @@ class CourseFragment : MvpNavFragment(), CourseView {
         }
     }
 
-    override fun setPairs(pairs: List<CurrencyPair>?) = courseAdapter.submitList(pairs)
+    override fun setPairs(pairs: List<CurrencyPair>?) {
+        swipeRefresh.isRefreshing = false
+        courseAdapter.submitList(pairs)
+    }
 }
