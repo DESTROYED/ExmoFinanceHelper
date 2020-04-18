@@ -1,5 +1,6 @@
 package com.destr.financehelper.data.datasource.cloud
 
+import com.destr.apierrorhandler.ErrorInterceptor
 import com.destr.financehelper.BuildConfig
 import com.destr.financehelper.data.datasource.cloud.response.PairDetail
 import com.destr.financehelper.data.Api
@@ -15,6 +16,7 @@ import java.util.concurrent.TimeUnit
 object NetworkClient {
 
     private val api by lazy { retrofit.create(Api::class.java) }
+    var interceptor: ErrorInterceptor? = null
 
     private val retrofit by lazy {
         Retrofit.Builder()
@@ -33,7 +35,10 @@ object NetworkClient {
 
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
-            .apply { if (BuildConfig.DEBUG) addInterceptor(setupHttpLoggingInterceptor()) }
+            .apply {
+                interceptor?.let { addInterceptor(it) }
+                if (BuildConfig.DEBUG) addInterceptor(setupHttpLoggingInterceptor())
+            }
             .retryOnConnectionFailure(true)
             .connectionPool(ConnectionPool(0, 1, TimeUnit.NANOSECONDS))
             .build()

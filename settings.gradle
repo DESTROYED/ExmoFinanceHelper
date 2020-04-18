@@ -1,2 +1,3 @@
 rootProject.name='FinanceHelper'
 include ':app'
+include ':apierrorhandler'
