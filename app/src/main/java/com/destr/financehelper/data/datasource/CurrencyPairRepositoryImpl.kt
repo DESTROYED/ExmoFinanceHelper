@@ -27,6 +27,9 @@ object CurrencyPairRepositoryImpl : CurrencyPairRepository {
         return currencyPairWithDetail.orEmpty().getCurrencyPairList(favorites)
     }
 
+    override suspend fun getOnlyFavoritesPairs(): List<CurrencyPair> =
+        getPairWithDetails().filter { it.isFavorite }
+
     override suspend fun getFavoritePairDetails() = getPairWithDetails().filter {
         currencyPairFactory.createLocalPairStorage().getFavoritePairDetails().find { favorite -> favorite.currencyPair == it.pairName } != null
     }

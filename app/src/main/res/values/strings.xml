@@ -8,7 +8,7 @@
     <string name="null_sell_price_label_text">Null sell price:</string>
     <string name="profit_label_text">Profit:</string>
     <string name="converted_benefit_label_text">Converted benefit:</string>
-    <string name="course_page_title">Course page</string>
-    <string name="calculate_page_title">Calculate page</string>
-    <string name="favorite_button_description">Favorite button</string>
+    <string name="favorite_course_page_title">Favorites</string>
+    <string name="course_page_title">Course</string>
+    <string name="calculate_page_title">Calculate</string>
 </resources>

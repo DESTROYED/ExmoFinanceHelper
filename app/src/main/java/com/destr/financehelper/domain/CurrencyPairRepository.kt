@@ -6,6 +6,8 @@ interface CurrencyPairRepository {
 
     suspend fun getPairWithDetails(): List<CurrencyPair>
 
+    suspend fun getOnlyFavoritesPairs(): List<CurrencyPair>
+
     suspend fun getFavoritePairDetails(): List<CurrencyPair>
 
     suspend fun setFavoriteState(currencyPair: String, isFavorite: Boolean): Unit?

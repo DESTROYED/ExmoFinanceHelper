@@ -13,15 +13,45 @@
         <action
             android:id="@+id/action_start_course_fragment"
             app:destination="@id/course_fragment" />
+
+        <action
+            android:id="@+id/action_start_favorite_course_fragment"
+            app:destination="@id/favorite_course_fragment" />
     </fragment>
 
     <fragment
         android:id="@+id/course_fragment"
         android:name="com.destr.financehelper.presentation.screen.course.CourseFragment"
         android:label="Course Fragment"
-        tools:layout="@layout/calculated_fragment">
+        tools:layout="@layout/course_fragment">
+        <argument
+            android:name="showOnlyFavorites"
+            android:defaultValue="false" />
+
         <action
             android:id="@+id/action_start_calculate_fragment"
             app:destination="@id/calculate_fragment" />
+
+        <action
+            android:id="@+id/action_start_favorite_course_fragment"
+            app:destination="@id/favorite_course_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/favorite_course_fragment"
+        android:name="com.destr.financehelper.presentation.screen.course.CourseFragment"
+        android:label="Favorite Course Fragment"
+        tools:layout="@layout/course_fragment">
+        <argument
+            android:name="showOnlyFavorites"
+            android:defaultValue="true" />
+
+        <action
+            android:id="@+id/action_start_calculate_fragment"
+            app:destination="@id/calculate_fragment" />
+
+        <action
+            android:id="@+id/action_start_course_fragment"
+            app:destination="@id/course_fragment" />
     </fragment>
 </navigation>

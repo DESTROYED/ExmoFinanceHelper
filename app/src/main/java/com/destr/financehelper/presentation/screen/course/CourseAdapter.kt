@@ -11,7 +11,8 @@ import java.util.*
 
 class CourseAdapter(
     diffCallback: DiffUtil.ItemCallback<CurrencyPair>,
-    private val onPairLongClicked: (CurrencyPair) -> Unit
+    private val onPairLongClicked: (CurrencyPair) -> Unit,
+    private val isFavoritePage: Boolean?
 ) : ListAdapter<CurrencyPair, CourseViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -51,7 +52,11 @@ class CourseAdapter(
             itemView.setOnLongClickListener {
                 currency.isFavorite = !currency.isFavorite
                 onPairLongClicked.invoke(currency)
-                notifyItemChanged(adapterPosition)
+                if(isFavoritePage != null && isFavoritePage){
+                    notifyItemRemoved(adapterPosition)
+                }else {
+                    notifyItemChanged(adapterPosition)
+                }
                 return@setOnLongClickListener true
             }
         }

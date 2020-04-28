@@ -22,19 +22,21 @@ class CoursePresenter : MvpPresenter<CourseView>() {
     private var filteredPairs: List<CurrencyPair> = emptyList()
     private var coursePairRepository = ExmoFinanceHelperApplication().currencyPairRepository
 
-    fun onStart() {
+    fun onStart(isFavoritePage: Boolean) {
         loadCurrencies()
-        loadPairs()
+        loadPairs(isFavoritePage)
     }
 
-    fun refreshCourses() {
+    fun refreshCourses(isFavoritePage: Boolean) {
         presenterUIScope.launch { viewState.setPairs(null) }
-        onStart()
+        onStart(isFavoritePage)
     }
 
-    private fun loadPairs() = presenterIOScope.launch {
-        pairsMap = ExmoFinanceHelperApplication().currencyPairRepository.getPairWithDetails()
-        presenterUIScope.launch { viewState.setPairs(pairsMap) }
+    private fun loadPairs(isFavoritePage: Boolean) = presenterIOScope.launch {
+        with(ExmoFinanceHelperApplication().currencyPairRepository) {
+            pairsMap = if (isFavoritePage) getFavoritePairDetails() else getPairWithDetails()
+            presenterUIScope.launch { viewState.setPairs(pairsMap) }
+        }
     }
 
     private fun filterBySecondCurrency(currency: String) =

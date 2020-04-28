@@ -21,11 +21,13 @@ class CourseFragment : MvpNavFragment(), CourseView {
     @InjectPresenter
     lateinit var coursePresenter: CoursePresenter
 
+    private val isFavoritePage by lazy { arguments?.getBoolean("showOnlyFavorites") }
+
     private val onPairLongClick = { currencyPair: CurrencyPair ->
         coursePresenter.onCourseItemLongClick(currencyPair)
     }
 
-    private val courseAdapter by lazy { CourseAdapter(TaskDiffCallback(), onPairLongClick) }
+    private val courseAdapter by lazy { CourseAdapter(TaskDiffCallback(), onPairLongClick, isFavoritePage) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,13 +39,15 @@ class CourseFragment : MvpNavFragment(), CourseView {
 
     override fun onStart() {
         super.onStart()
-        coursePresenter.onStart()
+        isFavoritePage?.let { coursePresenter.onStart(it) }
     }
 
     private fun setupCourseViews(view: View) = with(view) {
         course_list.adapter = courseAdapter
         swipeRefresh.setOnRefreshListener {
-            coursePresenter.refreshCourses()
+            isFavoritePage?.let {
+                coursePresenter.refreshCourses(it)
+            }
         }
     }
 
