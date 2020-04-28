@@ -49,8 +49,8 @@ class CourseAdapter(
             }
 
             itemView.setOnLongClickListener {
-                onPairLongClicked.invoke(currency)
                 currency.isFavorite = !currency.isFavorite
+                onPairLongClicked.invoke(currency)
                 notifyItemChanged(adapterPosition)
                 return@setOnLongClickListener true
             }

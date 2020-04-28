@@ -27,7 +27,7 @@ class CoursePresenter : MvpPresenter<CourseView>() {
         loadPairs()
     }
 
-    fun refreshCourses(){
+    fun refreshCourses() {
         presenterUIScope.launch { viewState.setPairs(null) }
         onStart()
     }
@@ -59,7 +59,7 @@ class CoursePresenter : MvpPresenter<CourseView>() {
 
     fun onCourseItemLongClick(currencyPair: CurrencyPair) {
         presenterIOScope.launch {
-            coursePairRepository.setFavoriteState(currencyPair.pairName, !currencyPair.isFavorite)
+            coursePairRepository.setFavoriteState(currencyPair.pairName, currencyPair.isFavorite)
         }
     }
 
