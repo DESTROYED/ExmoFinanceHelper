@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.calculated_fragment.*
 import kotlinx.android.synthetic.main.calculated_fragment.view.*
 import moxy.presenter.InjectPresenter
 
-class CalculateFragment : MvpNavFragment(),
+internal class CalculateFragment : MvpNavFragment(),
     CalculateView {
 
     @InjectPresenter
@@ -32,101 +32,67 @@ class CalculateFragment : MvpNavFragment(),
     private fun initViews(view: View) {
         with(view) {
             cost.onTextChanged {
-                with(calculatePresenter) {
-                    calculateNullBestPrice(cost.text.getDouble())
-                    calculateSellCostPrice(
-                        entrancePrice.text.getDouble(),
-                        cost.text.getDouble(),
-                        sellCost.text.getDouble()
-                    )
-                    calculatedConvertedPrice(
-                        entrancePrice.text.getDouble(),
-                        cost.text.getDouble(),
-                        sellCost.text.getDouble(),
-                        convertingCourse.text.getDouble()
-                    )
-                }
+                calculatePresenter.onCostTextChanged(
+                    entrancePrice.text.getDouble(),
+                    cost.text.getDouble(),
+                    sellCost.text.getDouble(),
+                    convertingCourse.text.getDouble()
+                )
             }
 
             sellCost.onTextChanged {
-                with(calculatePresenter) {
-                    calculateSellCostPrice(
-                        entrancePrice.text.getDouble(),
-                        cost.text.getDouble(),
-                        sellCost.text.getDouble()
-                    )
-                    calculatedConvertedPrice(
-                        entrancePrice.text.getDouble(),
-                        cost.text.getDouble(),
-                        sellCost.text.getDouble(),
-                        convertingCourse.text.getDouble()
-                    )
-                }
+                calculatePresenter.onSellOrEntrancePriceTextChanged(
+                    entrancePrice.text.getDouble(),
+                    cost.text.getDouble(),
+                    sellCost.text.getDouble(),
+                    convertingCourse.text.getDouble()
+                )
+            }
 
-                entrancePrice.onTextChanged {
-                    with(calculatePresenter) {
-                        calculateSellCostPrice(
-                            entrancePrice.text.getDouble(),
-                            cost.text.getDouble(),
-                            sellCost.text.getDouble()
-                        )
-                        calculatedConvertedPrice(
-                            entrancePrice.text.getDouble(),
-                            cost.text.getDouble(),
-                            sellCost.text.getDouble(),
-                            convertingCourse.text.getDouble()
-                        )
-                    }
-                }
+            entrancePrice.onTextChanged {
+                calculatePresenter.onSellOrEntrancePriceTextChanged(
+                    entrancePrice.text.getDouble(),
+                    cost.text.getDouble(),
+                    sellCost.text.getDouble(),
+                    convertingCourse.text.getDouble()
+                )
+            }
 
-                convertingCourse.onTextChanged {
-                    calculatePresenter.calculatedConvertedPrice(
-                        entrancePrice.text.getDouble(),
-                        cost.text.getDouble(),
-                        sellCost.text.getDouble(),
-                        convertingCourse.text.getDouble()
-                    )
-                }
+            convertingCourse.onTextChanged {
+                calculatePresenter.onConvertingCourseTextChanged(
+                    entrancePrice.text.getDouble(),
+                    cost.text.getDouble(),
+                    sellCost.text.getDouble(),
+                    convertingCourse.text.getDouble()
+                )
             }
         }
     }
 
-    override fun setCalculatedNullBestPrice(calculatedNullBestPrice: Double) =
-        if (cost.text.getDouble() != .0) {
-            bestPriceBlock.isVisible = true
-            minimalBestPrice.setCalculated(calculatedNullBestPrice)
-        } else {
-            bestPriceBlock.isVisible = false
-        }
-
-    override fun setCalculatedSellCostPrice(calculatedSellCostPrice: Double) {
-        if (isSellCostPriceValid()) {
-            profitBlock.isVisible = true
-            scalpedValue.setCalculated(calculatedSellCostPrice)
-        } else {
-            profitBlock.isVisible = false
-        }
+    override fun hideBestPriceBlock() {
+        bestPriceBlock.isVisible = false
     }
 
-    private fun isSellCostPriceValid(): Boolean {
-        return entrancePrice.text.getDouble() != .0
-                && cost.text.getDouble() != .0
-                && sellCost.text.getDouble() != .0
+    override fun hideProfitBlock() {
+        profitBlock.isVisible = false
+    }
+
+    override fun hideConvertedBlock() {
+        convertedBlock.isVisible = false
+    }
+
+    override fun setCalculatedNullBestPrice(calculatedNullBestPrice: Double) {
+        bestPriceBlock.isVisible = true
+        minimalBestPrice.setCalculated(calculatedNullBestPrice)
+    }
+
+    override fun setCalculatedSellCostPrice(calculatedSellCostPrice: Double) {
+        profitBlock.isVisible = true
+        scalpedValue.setCalculated(calculatedSellCostPrice)
     }
 
     override fun setCalculatedConvertedPrice(calculatedConvertedPrice: Double) {
-        if (isConvertedPriceValid()) {
-            convertedBlock.isVisible = true
-            convertedPrice.setCalculated(calculatedConvertedPrice)
-        } else {
-            convertedBlock.isVisible = false
-        }
-    }
-
-    private fun isConvertedPriceValid(): Boolean {
-        return entrancePrice.text.getDouble() != .0
-                && cost.text.getDouble() != .0
-                && sellCost.text.getDouble() != .0
-                && convertingCourse.text.getDouble() != .0
+        convertedBlock.isVisible = true
+        convertedPrice.setCalculated(calculatedConvertedPrice)
     }
 }

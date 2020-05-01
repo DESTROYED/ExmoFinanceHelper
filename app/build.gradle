@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "de.mannodermaus.android-junit5"
 
 android {
     compileSdkVersion 29
@@ -10,6 +11,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        exclude "META-INF/LICENSE*"
     }
 
     kotlinOptions {
@@ -22,6 +27,14 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArgument "runnerBuilder", "de.mannodermaus.junit5.AndroidJUnit5Builder"
+    }
+
+    testOptions {
+        junitPlatform {
+            instrumentationTests.integrityCheckEnabled = false
+        }
     }
 
     buildTypes {
@@ -72,4 +85,10 @@ dependencies {
     // Kotlin Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.ext.kotlinCoroutineVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.ext.kotlinCoroutineVersion"
+
+    // Tests
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.0"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.6.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.6.0"
+    testImplementation "io.mockk:mockk:1.9.3"
 }

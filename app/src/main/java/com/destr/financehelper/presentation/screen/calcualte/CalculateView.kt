@@ -9,4 +9,10 @@ interface CalculateView : MvpView {
     fun setCalculatedSellCostPrice(calculatedSellCostPrice: Double)
 
     fun setCalculatedConvertedPrice(calculatedConvertedPrice: Double)
+
+    fun hideBestPriceBlock()
+
+    fun hideProfitBlock()
+
+    fun hideConvertedBlock()
 }
